@@ -1,5 +1,5 @@
 import pygame
-import random
+import time
 
 from snake import Snake
 from apple import Apples
@@ -7,10 +7,11 @@ from apple import Apples
 class Game():
 
     # Default objects
-    snake = Snake()
     apples = Apples()
     window_width = 300
     window_heigth = 300
+    interface_heigth = 30
+    snake = Snake()
     velocity = 5
 
     def __init__(self):
@@ -20,6 +21,7 @@ class Game():
         pygame.display.update() # Update our window
         pygame.display.set_caption('Jeu du snake')
         self.handleGame() # Launch game
+        self.handleGameOverMenu() # Display game over tab
         pygame.quit()
 
     def handleGame(self):
@@ -33,17 +35,26 @@ class Game():
                     self.handleKeyPressed(event)
             # Handle display
             moveToDelete = self.handleMovement() # We setup our next move and retrieve the previous move to delete
+            isGameOver = self.handleGameOver()
+            if isGameOver:
+                gameOver = True
             self.displaySnake(moveToDelete) # We will display our snake and remove our move to delete
             self.displayApple() # We display our apple
+            self.displayInterface() # We display score and lives
             self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
-            gameOver = self.handleGameOver()
             clock.tick(self.snake.velocity) # Our clock freezing game
 
+    # Handle if it's a game over or not
     def handleGameOver(self):
-        self.snake.checkDeath(self.window_width, self.window_heigth)
+        died = self.snake.checkDeath(self.window_width, self.window_heigth, self.interface_heigth)
+        # If snake has no lives, set game over
         if self.snake.lives == 0:
             return True
         else:
+            # If snake died, have to respawn him
+            if died == True:
+                self.window.fill((255, 255, 255))
+                self.snake.respawn(self.window_width, self.interface_heigth)
             return False
 
     # Change snake direction according to the key selected
@@ -60,8 +71,8 @@ class Game():
     # Moving our snake
     def handleMovement(self):
         moveToDelete = self.snake.historic[0] # Tail of the snake
-        [x, y] = self.snake.moveSnake() # Next position of the snake
-        eaten = self.apples.checkAppleEaten(x, y, self.window_width, self.window_heigth) # Check if the snake ate an apple
+        [x, y] = self.snake.moveSnake(self.interface_heigth) # Next position of the snake
+        eaten = self.apples.checkAppleEaten(x, y, self.window_width, self.window_heigth, self.interface_heigth) # Check if the snake ate an apple
         # If not, remove his tail, if yes, keep it ( the snake will have +1 length)
         if eaten == False:
             self.snake.historic.pop(0)
@@ -87,6 +98,20 @@ class Game():
         red = (255, 0, 0)
         pygame.draw.rect(self.window, red, [self.apples.current[0], self.apples.current[1], 10, 10])
 
+    # Display lives and score
+    def displayInterface(self):
+        pygame.draw.rect(self.window, (125, 125, 125), [0, 0, self.window_width, 30])
+        font_style = pygame.font.SysFont(None, int(self.window_width / 15))
+        mesg = font_style.render("Vies : "+str(self.snake.lives), True, (0, 0, 255))
+        self.window.blit(mesg, [5, 5])
+
+    def handleGameOverMenu(self):
+        self.window.fill((255, 255, 255))
+        font_style = pygame.font.SysFont(None, int(self.window_width/10))
+        mesg = font_style.render("Game Over", True, (255, 0, 0))
+        self.window.blit(mesg, [self.window_width / 3, self.window_heigth / 2])
+        pygame.display.update()
+        time.sleep(10)
 
 if __name__ == '__main__':
     Game()
