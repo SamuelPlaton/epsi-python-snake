@@ -28,15 +28,16 @@ class Game():
         while restart:
             self.handleStartMenu()  # Launch menu
             self.handleGame()  # Launch game
-            restart = self.handleGameOverMenu()  # Display game over tab
+            self.handleGameOverMenu()  # Display game over tab
         pygame.quit()
 
     def handleStartMenu(self):
 
         gameStart = False  # By default the game don't start
-
+        background = pygame.image.load('assets/snake2.jpg')
+        background = pygame.transform.scale(background, (300, 300))
         while not gameStart:
-            self.window.fill((255, 255, 255))
+            self.window.blit(background, (0, 0))
             play_button = pygame.image.load('assets/button.png')  # We get ur image for the button from the assets rep
             play_button = pygame.transform.scale(play_button, (100, 50))
             play_button_rect = play_button.get_rect()
@@ -44,11 +45,11 @@ class Game():
             play_button_rect.y = math.ceil(self.window_heigth / 2.5)
             self.window.blit(play_button, play_button_rect)  # print ur button
             font_style = pygame.font.SysFont(None, int(self.window_width / 10))
-            font_style_2 = pygame.font.SysFont(None, int(self.window_width / 15))
+            font_style_2 = pygame.font.SysFont(None, int(self.window_width / 13))
             name = font_style.render(self.scoreBoard.playerName, True, (0, 0, 0))  # create a variable for the name of the player
             # create a message to warn the user he must give us a name
             msg_name = font_style_2.render("Veuillez saisir votre pseudo: ", True, (0, 0, 0))
-            self.window.blit(msg_name, [self.window_width / 3.5, self.window_heigth / 4])  # print the message
+            self.window.blit(msg_name, [self.window_width / 4.5, self.window_heigth / 4])  # print the message
             self.window.blit(name, [self.window_width / 3, self.window_heigth / 3])  # print the name in real time
             pygame.display.update()
             for event in pygame.event.get():
@@ -180,19 +181,59 @@ class Game():
 
     # Handle game over menu
     def handleGameOverMenu(self):
-        self.window.fill((255, 255, 255))
-        font_style = pygame.font.SysFont(None, int(self.window_width / 10))
-        self.handleScoreBoard() # Handle scoreboard
-        font_style = pygame.font.SysFont(None, int(self.window_width/10))
-        mesg = font_style.render("Game Over", True, (255, 0, 0))
-        self.window.blit(mesg, [self.window_width / 3, self.window_heigth / 2])
-        pygame.display.update()
-        time.sleep(10)
+        restart = False  # create a local variable restart
+        background = pygame.image.load('assets/snake.jpg')
+        background = pygame.transform.scale(background, (300, 300))
+        self.window.blit(background, (0, 0))
+        self.handleScoreBoard()  # Handle scoreboard
+        while not restart:
+            font_style = pygame.font.SysFont(None, int(self.window_width/10))
+            mesg = font_style.render("Game Over", True, (255, 0, 0))
+            self.window.blit(mesg, [self.window_width / 3, self.window_heigth / 2])
+
+            # Create and set a position to ur restart button
+            restart_button = pygame.image.load('assets/restart.png')
+            restart_button = pygame.transform.scale(restart_button, (100, 50))
+            restart_button_rect = restart_button.get_rect()
+            restart_button_rect.x = math.ceil(self.window_width / 3)
+            restart_button_rect.y = math.ceil(self.window_heigth / 1.3)
+            self.window.blit(restart_button, restart_button_rect)  # print ur button
+
+            # Create and set a quit button
+            leave_button = pygame.image.load('assets/quit.png')
+            leave_button = pygame.transform.scale(leave_button, (100, 50))
+            leave_button_rect = leave_button.get_rect()
+            leave_button_rect.x = math.ceil(self.window_width / 3)
+            leave_button_rect.y = math.ceil(self.window_heigth / 1.7)
+            self.window.blit(leave_button, leave_button_rect)
+
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:  # check if user want to leave
+                    pygame.quit()  # close the game
+                elif event.type == pygame.MOUSEBUTTONDOWN:  # check if the user is clicking with the mouse
+                    #  check if he's clicking on the position of the restart button
+                    if restart_button_rect.collidepoint(event.pos):
+                        restart = True  # set restart is true
+                    # check if he's clicking on the exit button
+                    if leave_button_rect.collidepoint(event.pos):
+                        pygame.quit()  # leave the game
+
+        if restart:
+            # if the player want to restart the game we reset his attribute
+            self.scoreBoard.playerName = ''
+            self.scoreBoard.playerScore = 0
+            self.snake = Snake()
+
+
+
+
+
 
     def handleScoreBoard(self):
         self.scoreBoard.writeScore() # Write the new score
         self.scoreBoard.readScoreBoard() # Read score board
-        font_style = pygame.font.SysFont(None, int(self.window_width / 16))
+        font_style = pygame.font.SysFont(None, int(self.window_width / 14))
         i = 1
         # Write data in our menu
         for element in self.scoreBoard.scoreBoard:
