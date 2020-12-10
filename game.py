@@ -5,11 +5,13 @@ import math
 from snake import Snake
 from apple import Apples
 from scoreboard import Scoreboard
+from obstacle import Obstacles
 
 
 class Game():
     # Default objects
     apples = Apples()
+    obstacles = Obstacles()
     window_width = 300
     window_heigth = 300
     interface_heigth = 30
@@ -82,6 +84,7 @@ class Game():
             self.displaySnake(moveToDelete) # We will display our snake and remove our move to delete
             self.displayApple() # We display our apple
             self.displayInterface() # We display score and lives
+            self.displayObstacle() # We display our obstacles
             self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
             pygame.display.update()
             clock.tick(self.snake.velocity) # Our clock freezing game
@@ -149,6 +152,19 @@ class Game():
         score = font_style.render("Score : " + str(self.scoreBoard.playerScore), True, (0, 0, 0))
         self.window.blit(score, [5, 5])
         self.window.blit(lives, [int(self.window_width/1.3), 5])
+
+    def displayObstacle(self):
+        black = (0, 0, 0)
+
+        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth)
+
+        if self.snake.size == self.obstacles.dernierPalier:
+            self.obstacles.ajouterObstacle(self.window_width, self.window_heigth)
+            self.obstacles.dernierPalier += 10
+
+        for i in range(0, (len(self.obstacles.obstacles)-1), 2):
+
+            pygame.draw.rect(self.window, black, [self.obstacles.obstacles[i+0], self.obstacles.obstacles[i+1], 10, 10])
 
     # Handle game over menu
     def handleGameOverMenu(self):
