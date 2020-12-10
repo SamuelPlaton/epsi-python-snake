@@ -11,6 +11,7 @@ class Game():
     apples = Apples()
     window_width = 300
     window_heigth = 300
+    velocity = 5
 
     def __init__(self):
         pygame.init() # Init our game
@@ -34,8 +35,8 @@ class Game():
             moveToDelete = self.moveSnake() # We setup our next move and retrieve the previous move to delete
             self.displaySnake(moveToDelete) # We will display our snake and remove our move to delete
             self.displayApple() # We display our apple
-            gameSpeed = self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
-            clock.tick(gameSpeed) # Our clock freezing game
+            self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
+            clock.tick(self.snake.velocity) # Our clock freezing game
 
     # Change snake direction according to the key selected
     def handleKeyPressed(self, event):
