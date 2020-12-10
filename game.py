@@ -1,5 +1,6 @@
 import pygame
 import time
+import math
 
 from snake import Snake
 from apple import Apples
@@ -20,9 +21,30 @@ class Game():
         self.window.fill((255, 255, 255)) # Fill our window of white
         pygame.display.update() # Update our window
         pygame.display.set_caption('Jeu du snake')
+        self.handleStartMenu() # Launch menu
         self.handleGame() # Launch game
         self.handleGameOverMenu() # Display game over tab
         pygame.quit()
+
+    def handleStartMenu(self):
+        gameStart = False
+        while gameStart == False:
+            play_button = pygame.image.load('assets/button.png')
+            play_button = pygame.transform.scale(play_button, (100, 50))
+            play_button_rect = play_button.get_rect()
+            play_button_rect.x = math.ceil(self.window_width/3)
+            play_button_rect.y = math.ceil(self.window_heigth/2.5)
+            self.window.blit(play_button, (play_button_rect))
+            pygame.display.update()
+            for event in pygame.event.get():
+              if event.type == pygame.MOUSEBUTTONDOWN:
+                  if play_button_rect.collidepoint(event.pos):
+                      gameStart = True
+        if gameStart == True:
+            self.window.fill((255, 255, 255))
+            pygame.display.update()
+
+
 
     def handleGame(self):
         gameOver = False # By default, no game over
