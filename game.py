@@ -5,7 +5,11 @@ import math
 from snake import Snake
 from apple import Apples
 from scoreboard import Scoreboard
+<<<<<<< HEAD
 from obstacle import Obstacles
+=======
+from bonus import Bonus
+>>>>>>> feat: add bonus malus
 
 
 class Game():
@@ -15,10 +19,11 @@ class Game():
     window_width = 300
     window_heigth = 300
     interface_heigth = 30
-    snake = Snake()
     scoreBoard = Scoreboard()
+    bonus = Bonus()
 
     def __init__(self):
+        self.snake = Snake(self.interface_heigth)
         pygame.init()  # Init our game
         self.window = pygame.display.set_mode((self.window_width, self.window_heigth))  # Display our window to 300*300
         self.window.fill((255, 255, 255))  # Fill our window of white
@@ -126,9 +131,20 @@ class Game():
         else:
             self.snake.size += 1
             self.scoreBoard.playerScore += 100
+
+        self.handleBonus(x, y)
         # Add his new position on his historic
         self.snake.historic.append([x, y])
         return moveToDelete
+
+    def handleBonus(self, x, y):
+        if not self.bonus.active:
+            self.bonus.spawnBonus()
+        else:
+            isEaten = self.bonus.checkBonusEaten(x, y)
+
+        if isEaten:
+            if self.bonus.type
 
     # Display the snake
     def displaySnake(self, moveToDelete):
@@ -153,18 +169,6 @@ class Game():
         score = font_style.render("Score : " + str(self.scoreBoard.playerScore), True, (0, 0, 0))
         self.window.blit(score, [5, 5])
         self.window.blit(lives, [int(self.window_width/1.3), 5])
-    def displayObstacle(self):
-        black = (0, 0, 0)
-
-        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth)
-
-        if self.snake.size == self.obstacles.dernierPalier:
-            self.obstacles.ajouterObstacle(self.window_width, self.window_heigth)
-            self.obstacles.dernierPalier += 10
-
-        for i in range(0, (len(self.obstacles.obstacles)-1), 2):
-
-            pygame.draw.rect(self.window, black, [self.obstacles.obstacles[i+0], self.obstacles.obstacles[i+1], 10, 10])
 
     def displayObstacle(self):
         black = (0, 0, 0)
@@ -223,7 +227,7 @@ class Game():
             # if the player want to restart the game we reset his attribute
             self.scoreBoard.playerName = ''
             self.scoreBoard.playerScore = 0
-            self.snake = Snake()
+            self.snake = Snake(self.interface_heigth)
 
 
 
