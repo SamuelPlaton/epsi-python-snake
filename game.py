@@ -200,11 +200,9 @@ class Game():
     def displayObstacle(self):
         black = (0, 0, 0)
 
-        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth, self.interface_heigth)
-
         if self.snake.size == self.obstacles.dernierPalier:
             self.obstacles.ajouterObstacle(self.window_width, self.window_heigth, self.interface_heigth, self.apples.current)
-            self.obstacles.dernierPalier += 10
+            self.obstacles.dernierPalier += 3
 
         for i in self.obstacles.obstacles:
 
@@ -255,6 +253,8 @@ class Game():
             self.scoreBoard.playerName = ''
             self.scoreBoard.playerScore = 0
             self.snake = Snake(self.interface_heigth)
+            self.obstacles = Obstacles()
+            self.apples = Apples()
 
 
 

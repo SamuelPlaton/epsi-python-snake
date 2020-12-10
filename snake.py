@@ -14,7 +14,6 @@ class Snake():
             self.velocity = 30
 
     def checkDeath(self, width, heigth, interface_heigth, obstacles):
-        print(obstacles)
         lastPosition = self.historic[-1] # Head position
         x = lastPosition[0]
         y = lastPosition[1]
