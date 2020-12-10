@@ -4,3 +4,4 @@ gugus:800
 sam:200
 tom:0
 lucas:100
+test:500

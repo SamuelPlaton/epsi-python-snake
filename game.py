@@ -1,5 +1,4 @@
 import pygame
-import time
 import math
 
 from snake import Snake
@@ -27,6 +26,7 @@ class Game():
         pygame.display.update()  # Update our window
         pygame.display.set_caption('Jeu du snake')
         restart = True
+        # Loop if the player restart
         while restart:
             self.handleStartMenu()  # Launch menu
             self.handleGame()  # Launch game
@@ -89,12 +89,13 @@ class Game():
             self.displayApple() # We display our apple
             self.displayInterface() # We display score and lives
             self.displayObstacle() # We display our obstacles
-            self.displayBonus()
+            self.displayBonus() # We display our bonuses
             pygame.display.update()
             clock.tick(self.snake.velocity) # Our clock freezing game
 
     # Handle if it's a game over or not
     def handleGameOver(self):
+        # Check if the user died
         died = self.snake.checkDeath(self.window_width, self.window_heigth, self.interface_heigth, self.obstacles.obstacles)
         # If snake has no lives, set game over
         if self.snake.lives == 0:
@@ -129,7 +130,7 @@ class Game():
         else:
             self.snake.size += 1
             self.scoreBoard.playerScore += 100
-
+        # Handle bonus
         self.handleBonus(x, y)
         # Add his new position on his historic
         self.snake.historic.append([x, y])
@@ -197,15 +198,15 @@ class Game():
         self.window.blit(score, [5, 5])
         self.window.blit(lives, [int(self.window_width/1.3), 5])
 
+    # Display obstacles
     def displayObstacle(self):
         black = (0, 0, 0)
-
+        # Handle if we add obstacle
         if self.snake.size == self.obstacles.dernierPalier:
             self.obstacles.ajouterObstacle(self.window_width, self.window_heigth, self.interface_heigth, self.apples.current)
             self.obstacles.dernierPalier += 3
-
+        # Display obstacles
         for i in self.obstacles.obstacles:
-
             pygame.draw.rect(self.window, black, [i[0], i[1], 10, 10])
 
     # Handle game over menu
@@ -256,11 +257,7 @@ class Game():
             self.obstacles = Obstacles()
             self.apples = Apples()
 
-
-
-
-
-
+    # Handle scoreboard display
     def handleScoreBoard(self):
         self.scoreBoard.writeScore() # Write the new score
         self.scoreBoard.readScoreBoard() # Read score board
