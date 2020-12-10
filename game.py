@@ -5,11 +5,8 @@ import math
 from snake import Snake
 from apple import Apples
 from scoreboard import Scoreboard
-<<<<<<< HEAD
 from obstacle import Obstacles
-=======
 from bonus import Bonus
->>>>>>> feat: add bonus malus
 
 
 class Game():
@@ -85,13 +82,14 @@ class Game():
                 elif event.type == pygame.KEYDOWN: # If a key is pressed, we check for it
                     self.handleKeyPressed(event)
             # Handle display
+            self.snake.handleRapidity()  # Handle snake rapidity according to his size + set a speed limit
             moveToDelete = self.handleMovement() # We setup our next move and retrieve the previous move to delete
             gameOver = self.handleGameOver()
             self.displaySnake(moveToDelete) # We will display our snake and remove our move to delete
             self.displayApple() # We display our apple
             self.displayInterface() # We display score and lives
             self.displayObstacle() # We display our obstacles
-            self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
+            self.displayBonus()
             pygame.display.update()
             clock.tick(self.snake.velocity) # Our clock freezing game
 
@@ -137,14 +135,35 @@ class Game():
         self.snake.historic.append([x, y])
         return moveToDelete
 
+    # Handle bonus gestion
     def handleBonus(self, x, y):
-        if not self.bonus.active:
-            self.bonus.spawnBonus()
+        # If bonuses not actives or displayed, try to make it spawn
+        if not self.bonus.displayed and not self.bonus.active:
+            self.bonus.spawnBonus(self.window_width, self.window_heigth, self.interface_heigth)
         else:
-            isEaten = self.bonus.checkBonusEaten(x, y)
+            if len(self.bonus.current) == 2:
+                self.bonus.checkBonusEaten(x, y) # Check if eaten
+            if self.bonus.active: # Switch effect according to the bonus type
+                if self.bonus.type == 'speed+':
+                    self.snake.velocity = self.snake.velocity*3
+                elif self.bonus.type == 'speed-':
+                    self.snake.velocity = self.snake.velocity/3
+                elif self.bonus.type == 'score+':
+                    self.scoreBoard.playerScore += 500
+                    self.bonus.duration = 0
+                elif self.bonus.type == 'score-':
+                    self.scoreBoard.playerScore -= 500
+                    self.bonus.duration = 0
+                # Handle bonus duration, instant for scores, 30 ticks for speed
+                if self.bonus.duration > 0:
+                    self.bonus.duration -= 1
+                else:
+                    self.bonus.active = False
 
-        if isEaten:
-            if self.bonus.type
+    # Display bonus method
+    def displayBonus(self):
+        if len(self.bonus.current) == 2:
+            pygame.draw.rect(self.window, self.bonus.color, [self.bonus.current[0], self.bonus.current[1], 10, 10])
 
     # Display the snake
     def displaySnake(self, moveToDelete):
