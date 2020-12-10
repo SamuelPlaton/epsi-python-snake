@@ -13,13 +13,14 @@ class Snake():
         else:
             self.velocity = 30
 
-    def checkDeath(self, width, heigth, interface_heigth):
+    def checkDeath(self, width, heigth, interface_heigth, obstacles):
+        print(obstacles)
         lastPosition = self.historic[-1] # Head position
         x = lastPosition[0]
         y = lastPosition[1]
         previousPositions = self.historic[0:len(self.historic)-1] # All positions excepted head
         # If snake is out of range or touches himself, he dies
-        if x < 0 or x >= width or y < interface_heigth or y >= heigth or [x, y] in previousPositions:
+        if x < 0 or x >= width or y < interface_heigth or y >= heigth or [x, y] in previousPositions or [x, y] in obstacles:
             self.lives -= 1
             return True
         else:

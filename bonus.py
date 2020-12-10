@@ -7,6 +7,7 @@ class Bonus():
         self.active = False
         self.displayed = False
         self.duration = 30
+        self.waiting = 30
         self.color = (0, 0, 0)
         self.current = []
 
@@ -34,6 +35,7 @@ class Bonus():
             y = random.randint(1, int(
                 heigth - interface_heigth) / 10) * 10 - 10 + interface_heigth  # To be sure apple don't spawn in interface
             self.current = [x, y]
+            self.waiting = 30
 
     def checkBonusEaten(self, x, y):
         # If yes, Set bonus to active
