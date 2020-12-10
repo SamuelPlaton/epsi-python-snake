@@ -1,5 +1,4 @@
 import pygame
-import random
 
 from snake import Snake
 from apple import Apples
