@@ -2,12 +2,14 @@ import pygame
 
 from snake import Snake
 from apple import Apples
+from obstacle import Obstacles
 
 class Game():
 
     # Default objects
     snake = Snake()
     apples = Apples()
+    obstacles = Obstacles()
     window_width = 300
     window_heigth = 300
     velocity = 5
@@ -34,6 +36,7 @@ class Game():
             moveToDelete = self.handleMovement() # We setup our next move and retrieve the previous move to delete
             self.displaySnake(moveToDelete) # We will display our snake and remove our move to delete
             self.displayApple() # We display our apple
+            self.displayObstacle() # We display our obstacles
             self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
             gameOver = self.handleGameOver()
             clock.tick(self.snake.velocity) # Our clock freezing game
@@ -86,6 +89,18 @@ class Game():
         red = (255, 0, 0)
         pygame.draw.rect(self.window, red, [self.apples.current[0], self.apples.current[1], 10, 10])
 
+    def displayObstacle(self):
+        black = (0, 0, 0)
+
+        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth)
+
+        if self.snake.size == self.obstacles.dernierPalier:
+            self.obstacles.ajouterObstacle(self.window_width, self.window_heigth)
+            self.obstacles.dernierPalier += 10
+
+        for i in range(0, (len(self.obstacles.obstacles)-1), 2):
+
+            pygame.draw.rect(self.window, black, [self.obstacles.obstacles[i+0], self.obstacles.obstacles[i+1], 10, 10])
 
 if __name__ == '__main__':
     Game()

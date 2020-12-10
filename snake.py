@@ -1,7 +1,7 @@
 class Snake():
 
     def __init__(self):
-        self.size = 1
+
         self.direction = 'X'
         self.historic = [[10, 10]]
         self.velocity = 5
