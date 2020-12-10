@@ -10,6 +10,9 @@ cloner le projet git sur la branche master dans votre IDE.
 git clone https://github.com/SamuelPlaton/epsi-python-snake
 ```
 
+Et installer pygame
+```pip install pygame OU pip install -r requirements.txt```
+
 ## Utilisation
 
 après avoir ouvert le projet entrer la commande ci dessous pour lancer l'application
