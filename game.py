@@ -152,6 +152,18 @@ class Game():
         score = font_style.render("Score : " + str(self.scoreBoard.playerScore), True, (0, 0, 0))
         self.window.blit(score, [5, 5])
         self.window.blit(lives, [int(self.window_width/1.3), 5])
+    def displayObstacle(self):
+        black = (0, 0, 0)
+
+        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth)
+
+        if self.snake.size == self.obstacles.dernierPalier:
+            self.obstacles.ajouterObstacle(self.window_width, self.window_heigth)
+            self.obstacles.dernierPalier += 10
+
+        for i in range(0, (len(self.obstacles.obstacles)-1), 2):
+
+            pygame.draw.rect(self.window, black, [self.obstacles.obstacles[i+0], self.obstacles.obstacles[i+1], 10, 10])
 
     def displayObstacle(self):
         black = (0, 0, 0)
