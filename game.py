@@ -22,9 +22,11 @@ class Game():
         self.window.fill((255, 255, 255))  # Fill our window of white
         pygame.display.update()  # Update our window
         pygame.display.set_caption('Jeu du snake')
-        self.handleStartMenu()  # Launch menu
-        self.handleGame()  # Launch game
-        self.handleGameOverMenu()  # Display game over tab
+        restart = True
+        while restart:
+            self.handleStartMenu()  # Launch menu
+            self.handleGame()  # Launch game
+            restart = self.handleGameOverMenu()  # Display game over tab
         pygame.quit()
 
     def handleStartMenu(self):
