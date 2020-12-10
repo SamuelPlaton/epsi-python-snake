@@ -95,7 +95,7 @@ class Game():
 
     # Handle if it's a game over or not
     def handleGameOver(self):
-        died = self.snake.checkDeath(self.window_width, self.window_heigth, self.interface_heigth)
+        died = self.snake.checkDeath(self.window_width, self.window_heigth, self.interface_heigth, self.obstacles.obstacles)
         # If snake has no lives, set game over
         if self.snake.lives == 0:
             return True
@@ -122,7 +122,7 @@ class Game():
         moveToDelete = self.snake.historic[0]  # Tail of the snake
         [x, y] = self.snake.moveSnake(self.interface_heigth)  # Next position of the snake
         eaten = self.apples.checkAppleEaten(x, y, self.window_width, self.window_heigth,
-                                            self.interface_heigth)  # Check if the snake ate an apple
+                                            self.interface_heigth, self.obstacles.obstacles)  # Check if the snake ate an apple
         # If not, remove his tail, if yes, keep it ( the snake will have +1 length)
         if eaten == False:
             self.snake.historic.pop(0)
@@ -143,6 +143,7 @@ class Game():
         else:
             if len(self.bonus.current) == 2:
                 self.bonus.checkBonusEaten(x, y) # Check if eaten
+                self.bonus.waiting -= 1
             if self.bonus.active: # Switch effect according to the bonus type
                 if self.bonus.type == 'speed+':
                     self.snake.velocity = self.snake.velocity*3
@@ -160,6 +161,13 @@ class Game():
                 else:
                     self.bonus.active = False
 
+            # If we waited too long for a bonus, it's gone
+            if self.bonus.waiting == 0:
+                pygame.draw.rect(self.window, (255, 255, 255), [self.bonus.current[0], self.bonus.current[1], 10, 10])
+                self.bonus.active = False
+                self.bonus.current = []
+                self.bonus.displayed = False
+                
     # Display bonus method
     def displayBonus(self):
         if len(self.bonus.current) == 2:
@@ -192,15 +200,15 @@ class Game():
     def displayObstacle(self):
         black = (0, 0, 0)
 
-        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth)
+        self.obstacles.initialiserCoordonnees(self.window_width, self.window_heigth, self.interface_heigth)
 
         if self.snake.size == self.obstacles.dernierPalier:
-            self.obstacles.ajouterObstacle(self.window_width, self.window_heigth)
+            self.obstacles.ajouterObstacle(self.window_width, self.window_heigth, self.interface_heigth, self.apples.current)
             self.obstacles.dernierPalier += 10
 
-        for i in range(0, (len(self.obstacles.obstacles)-1), 2):
+        for i in self.obstacles.obstacles:
 
-            pygame.draw.rect(self.window, black, [self.obstacles.obstacles[i+0], self.obstacles.obstacles[i+1], 10, 10])
+            pygame.draw.rect(self.window, black, [i[0], i[1], 10, 10])
 
     # Handle game over menu
     def handleGameOverMenu(self):
