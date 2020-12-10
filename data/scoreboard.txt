@@ -24,3 +24,5 @@ Test:0
 sam:300
 samlebg:100
 sasasa:100
+ddd:900
+ssss:300

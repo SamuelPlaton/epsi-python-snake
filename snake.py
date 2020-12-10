@@ -1,6 +1,7 @@
 class Snake():
 
     def __init__(self):
+
         self.size = 1
         self.direction = 'X'
         self.historic = [[10, 40]]
@@ -19,7 +20,7 @@ class Snake():
         y = lastPosition[1]
         previousPositions = self.historic[0:len(self.historic)-1] # All positions excepted head
         # If snake is out of range or touches himself, he dies
-        if x < 0 or x > width or y < interface_heigth or y > heigth or [x, y] in previousPositions:
+        if x < 0 or x >= width or y < interface_heigth or y >= heigth or [x, y] in previousPositions:
             self.lives -= 1
             return True
         else:
