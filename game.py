@@ -1,16 +1,20 @@
 import pygame
+import random
 
 from snake import Snake
 from apple import Apples
+from bonus import Bonus
 
 class Game():
 
     # Default objects
     snake = Snake()
     apples = Apples()
+    bonus = Bonus()
     window_width = 300
     window_heigth = 300
     velocity = 5
+    lebonus = random.randint(40, 60)
 
     def __init__(self):
         pygame.init() # Init our game
@@ -34,9 +38,15 @@ class Game():
             moveToDelete = self.handleMovement() # We setup our next move and retrieve the previous move to delete
             self.displaySnake(moveToDelete) # We will display our snake and remove our move to delete
             self.displayApple() # We display our apple
+            self.lebonus = self.lebonus - 1
+            print(self.lebonus)
+            if self.lebonus == 0:
+                self.displayBonus()  # We display our bonus
+                self.lebonus = random.randint(40, 60)
             self.snake.handleRapidity() # Handle snake rapidity according to his size + set a speed limit
             gameOver = self.handleGameOver()
             clock.tick(self.snake.velocity) # Our clock freezing game
+
 
     def handleGameOver(self):
         self.snake.checkDeath(self.window_width, self.window_heigth)
@@ -61,11 +71,20 @@ class Game():
         moveToDelete = self.snake.historic[0] # Tail of the snake
         [x, y] = self.snake.moveSnake() # Next position of the snake
         eaten = self.apples.checkAppleEaten(x, y, self.window_width, self.window_heigth) # Check if the snake ate an apple
+        eatenbonus = self.bonus.checkBonusEaten(x, y, self.window_width, self.window_heigth)  # Check if the snake ate a bonus
         # If not, remove his tail, if yes, keep it ( the snake will have +1 length)
         if eaten == False:
             self.snake.historic.pop(0)
         else:
             self.snake.size += 1
+        if self.bonus.iseaten == True:
+            if self.bonusalea == self.listebonus[0]:
+                self.snake.velocity += 3
+            elif self.bonusalea == self.listebonus[1]:
+                self.snake.velocity -= 3
+
+
+
         # Add his new position on his historic
         self.snake.historic.append([x, y])
         return moveToDelete
@@ -85,6 +104,16 @@ class Game():
     def displayApple(self):
         red = (255, 0, 0)
         pygame.draw.rect(self.window, red, [self.apples.current[0], self.apples.current[1], 10, 10])
+
+    # Display apple according to self.apples
+    def displayBonus(self):
+        self.isdisplayed = False
+        greenBonus = (0, 255, 0)
+        malus1 = (255, 155, 0)
+        self.listebonus = [greenBonus, malus1]
+        self.bonusalea = random.choice(self.listebonus)
+
+        pygame.draw.rect(self.window, self.bonusalea, [self.bonus.current[0], self.bonus.current[1], 10, 10])
 
 
 if __name__ == '__main__':

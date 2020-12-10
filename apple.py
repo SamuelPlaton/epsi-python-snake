@@ -1,5 +1,6 @@
 import random
 
+
 class Apples():
     def __init__(self):
         self.eaten = 0
@@ -11,10 +12,9 @@ class Apples():
         if x == self.current[0] and y == self.current[1]:
             self.eaten += 1
             x = random.randint(1,
-                                   width / 10) * 10 - 10  # Eg : between 1 and 30 so 30*10 = 300, to be sure to works with multiples of 10
+                               width / 10) * 10 - 10  # Eg : between 1 and 30 so 30*10 = 300, to be sure to works with multiples of 10
             y = random.randint(1, heigth / 10) * 10 - 10
             self.current = [x, y]
             return True
         else:
             return False
-
